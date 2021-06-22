@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home:WelcomeScreen(),
       routes:{
-    ChatScreen.id: (BuildContext context) => ChatScreen(),
-    LoginScreen.id: (BuildContext context) => LoginScreen(),
-    RegistrationScreen.id: (BuildContext context) => RegistrationScreen(),
+     ChatScreen.id: (BuildContext context) => ChatScreen(),
+     LoginScreen.id: (BuildContext context) => LoginScreen(),
+     RegistrationScreen.id: (BuildContext context) => RegistrationScreen(),
     }
     );
   }
