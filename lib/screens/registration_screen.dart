@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/rounded_button.dart';
 import 'redirect_screen.dart';
+import 'package:flash_chat/utilities/alert.dart';
 class RegistrationScreen extends StatefulWidget {
   static String id = 'registration_screen';
 
@@ -70,8 +71,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
                     print('The password provided is too weak.');
+                    Alert alert=Alert(context: context,title: 'Authentication error',content: 'The password provided is too weak.');
+                    return alert.showAlert();
                   } else if (e.code == 'email-already-in-use') {
                     print('The account already exists for that email.');
+                    Alert alert=Alert(context: context,title: 'Authentication error',content: 'The account already exists for that email.');
+                    return alert.showAlert();
                   }
                 } catch (e) {
                   print(e);
@@ -89,6 +94,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 if(verified){
                   Navigator.pushNamed(context, ChatScreen.id);
                 }else{
+                  Alert alert=Alert(context: context,title: 'Authentication',content: 'Email sent for verification');
+                  alert.showAlert();
                   Navigator.pushNamed(context, Redirect.id);
                 }
               },

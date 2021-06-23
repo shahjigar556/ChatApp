@@ -5,6 +5,7 @@ import 'package:flash_chat/utilities/constant.dart';
 import 'package:flash_chat/components/rounded_button.dart';
 import 'chat_screen.dart';
 import 'redirect_screen.dart';
+import 'package:flash_chat/utilities/alert.dart';
 class LoginScreen extends StatefulWidget {
   static String id="login_screen";
   @override
@@ -13,10 +14,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
-  String email;
-  String password;
+  String email='';
+  String password='';
   FirebaseAuth _auth = FirebaseAuth.instance;
-  bool verified=true;
+  bool verified=false;
   Widget build(BuildContext context) {
     return Scaffold(
       body:Padding(
@@ -59,9 +60,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             RoundedButton(
-              text:'Register',
+              text:'Login',
               onPressed: () async {
                 UserCredential userCredential;
+                if(email=='' || password==''){
+                  Alert alert=Alert(context: context,title: 'Authentication error',content: 'Username or password cannot be null');
+                  return alert.showAlert();
+                }
                 try {
                       userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: email,
@@ -70,8 +75,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'user-not-found') {
                     print('No user found for that email.');
+                    Alert alert=Alert(context: context,title: 'Authentication error',content: 'Username Not Found');
+                    return alert.showAlert();
                   } else if (e.code == 'wrong-password') {
-                    print('Wrong password provided for that user.');
+                    Alert alert=Alert(context: context,title: 'Authentication error',content: 'Password does not match');
+                    return alert.showAlert();
                   }
                 }
                 //print(userCredential);
@@ -80,6 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   setState(() {
                     verified=false;
                   });
+                  Alert alert=Alert(context: context,title: 'Authentication error',content: 'Verify Your Email');
+                  alert.showAlert();
                   await user.sendEmailVerification();
                 }
                 if(user.emailVerified){
