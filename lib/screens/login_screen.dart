@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_chat/utilities/constant.dart';
 import 'package:flash_chat/components/rounded_button.dart';
 import 'chat_screen.dart';
+import 'redirect_screen.dart';
 class LoginScreen extends StatefulWidget {
   static String id="login_screen";
   @override
@@ -15,12 +16,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  bool verified=true;
   Widget build(BuildContext context) {
     return Scaffold(
       body:Padding(
         padding: const EdgeInsets.symmetric(horizontal:50.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Center(
               child: Text(
@@ -71,8 +74,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     print('Wrong password provided for that user.');
                   }
                 }
-                print(userCredential);
-                Navigator.pushNamed(context, ChatScreen.id);
+                //print(userCredential);
+                User user=_auth.currentUser;
+                if(user!=null && !user.emailVerified){
+                  setState(() {
+                    verified=false;
+                  });
+                  await user.sendEmailVerification();
+                }
+                if(user.emailVerified){
+                  setState(() {
+                    verified=true;
+                  });
+                }
+                if(verified){
+                  Navigator.pushNamed(context, ChatScreen.id);
+                }else{
+                  Navigator.pushNamed(context, Redirect.id);
+                }
+
               },
             )
           ],

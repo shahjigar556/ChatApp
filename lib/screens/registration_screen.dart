@@ -3,7 +3,7 @@ import 'package:flash_chat/utilities/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/rounded_button.dart';
-
+import 'redirect_screen.dart';
 class RegistrationScreen extends StatefulWidget {
   static String id = 'registration_screen';
 
@@ -16,6 +16,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String email;
   String password;
+  bool verified=false;
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -75,12 +76,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 } catch (e) {
                   print(e);
                 }
-                // User? user = FirebaseAuth.instance.currentUser;
-                //
-                // if (user!= null && !user.emailVerified) {
-                //   await user.sendEmailVerification();
-                // }
-                Navigator.pushNamed(context, ChatScreen.id);
+                print(userCredential);
+                User user = _auth.currentUser;
+                if (user!= null && !user.emailVerified) {
+                  await user.sendEmailVerification();
+                }
+                if(user.emailVerified){
+                  setState(() {
+                    verified=true;
+                  });
+                }
+                if(verified){
+                  Navigator.pushNamed(context, ChatScreen.id);
+                }else{
+                  Navigator.pushNamed(context, Redirect.id);
+                }
               },
             )
           ],
