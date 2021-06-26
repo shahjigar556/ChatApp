@@ -50,27 +50,31 @@ class _ChatScreenState extends State<ChatScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MessageStream(),
-                Row(
-                  children: [
-                    Expanded(
-                        child: TextField(
-                          controller: fieldText,
-                      onChanged: (val) {
-                        messageText = val;
-                      },
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter a Message...'),
-                    )),
-                    TextButton(onPressed: () {
-                      _firestore.collection('messages').add({
-                        'text': messageText,
-                        'sender': loggedInUser.email,
-                        'time' : Timestamp.now(),
-                      });
-                      fieldText.clear();
-                    }, child: Text('Send'))
-                  ],
+                Text('${loggedInUser.email} Joined Chat Room'),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: TextField(
+                            controller: fieldText,
+                        onChanged: (val) {
+                          messageText = val;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter a Message...'),
+                      )),
+                      TextButton(onPressed: () {
+                        _firestore.collection('messages').add({
+                          'text': messageText,
+                          'sender': loggedInUser.email,
+                          'time' : Timestamp.now(),
+                        });
+                        fieldText.clear();
+                      }, child: Text('Send'))
+                    ],
+                  ),
                 )
               ],
             ),
